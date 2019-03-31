@@ -4,13 +4,16 @@
     "slug": "FLHealthInspection",
     "privacy": "public",
     "sdkVersion": "32.0.0",
+    "ios": {
+      "bundleIdentifier": "com.yourcompany.yourappname"
+    },
     "platforms": [
       "ios",
       "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon.jpg",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -22,12 +25,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.dunnenterprises.flhealthinspections"
-    },
-    "android": {
-      "package": "com.dunnenterprises.flhealthinspections"
-    }
+
   }
 }
