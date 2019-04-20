@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  FlatList
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
@@ -30,6 +31,24 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this._getLocationAsync();
+    return fetch('http://3.89.110.44:5000/tc-health-inspection/v1/failedfirstinspection/county/monroe')
+
+    .then((response) => response.json())
+    .then((responseJson) => {
+      
+     
+
+      this.setState({
+        isLoading: false,
+        moviesDataSource: responseJson.inspections,
+      }, function(){
+
+      });
+
+    })
+    .catch((error) =>{
+      console.error(error);
+    });
   }
 
   _handleMapRegionChange = mapRegion => {
@@ -50,85 +69,66 @@ export default class HomeScreen extends React.Component {
  };
 
   render() {
-    return (
 
-      <View style={styles.container}>
-      <MapView style={styles.map}
-         region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
-         
-        >
+    console.log(this.state.moviesDataSource)   
+     console.log("test")
 
-          <MapView.Marker
-            coordinate={this.state.location.coords}
-            title={'My marker title'}
-            decription={'My marker description'}
-          />
+    if(this.state.isLoading){
+      return(
+        <View style={{flex: 1, padding: 20}}>
+          <ActivityIndicator/>
+        </View>
+      )
+    }
+    
+    return this.state.moviesDataSource instanceof Object ? (
 
-        </MapView>
+    //  <View style={{flex: 1, paddingTop:20}}>
+    //    <FlatList
+    //      data={this.state.moviesDataSource}
+    //      renderItem={({item}) => <Text>{item.Name}, {item.Violation}</Text>}
+    //      keyExtractor={({Id}, index) => Id}
+    //    />
+    //  </View>
 
-     <TouchableOpacity style={styles.overlay}>
-      <Text style={styles.text}>Click Here to Filter</Text>
-    </TouchableOpacity>
+    <View style={styles.container}>
+    
 
-{/* 
-    <ActionButton buttonColor="rgba(231,76,60,1)" style={styles.actionButton}>
-            <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => console.log("notes tapped!")}>
-              <Icon name="rocket" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-            <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
-              <Icon name="rocket" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-            <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => {}}>
-              <Icon name="rocket" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-          </ActionButton> */}
-     
+    
+    <MapView style={styles.map}
+       region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
+       
+      >
 
-    </View>
+   
 
-      // <View style={styles.container}>
-      //   <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      //     <View style={styles.welcomeContainer}>
-      //       <Image
-      //         source={
-      //           __DEV__
-      //             ? require('../assets/images/robot-dev.png')
-      //             : require('../assets/images/robot-prod.png')
-      //         }
-      //         style={styles.welcomeImage}
-      //       />
-      //     </View>
 
-      //     <View style={styles.getStartedContainer}>
-      //       {this._maybeRenderDevelopmentModeWarning()}
 
-      //       <Text style={styles.getStartedText}>Get started by opening</Text>
+  {this.state.moviesDataSource.map((e, i) =>  
+ <MapView.Marker
+ coordinate={{
+ latitude: e.Lat,
+ longitude: e.Lng
+}}
+title={e.Name}
+subtitle={e.Violation}
+key={i}
+/>
+ //   <SomeComponent key={i} label={e.label} value={e.value} />
+  )}
 
-      //       <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-      //         <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-      //       </View>
 
-      //       <Text style={styles.getStartedText}>
-      //         Change this text and your app will automatically reload.
-      //       </Text>
-      //     </View>
 
-      //     <View style={styles.helpContainer}>
-      //       <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-      //         <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-      //       </TouchableOpacity>
-      //     </View>
-      //   </ScrollView>
 
-      //   <View style={styles.tabBarInfoContainer}>
-      //     <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
+      </MapView>
 
-      //     <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-      //       <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-      //     </View>
-      //   </View>
-      // </View>
-    );
+   <TouchableOpacity style={styles.overlay}>
+    <Text style={styles.text}>Click Here to Filter</Text>
+  </TouchableOpacity>
+  </View>
+    
+      
+    )  : <Text>Fetching, Please wait....</Text>;
   }
 
   _maybeRenderDevelopmentModeWarning() {
