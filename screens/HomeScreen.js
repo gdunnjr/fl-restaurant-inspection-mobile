@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Image,
+  ActivityIndicator,
   Platform,
   ScrollView,
   StyleSheet,
@@ -31,7 +31,7 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this._getLocationAsync();
-    return fetch('http://3.89.110.44:5000/tc-health-inspection/v1/failedfirstinspection/county/monroe')
+    return fetch('http://3.89.110.44:5000/tc-health-inspection/v1/failedfirstinspection')
 
       .then((response) => response.json())
       .then((responseJson) => {
@@ -85,7 +85,8 @@ export default class HomeScreen extends React.Component {
 
 <View style={styles.container}>
         <MapView style={styles.map}
-          region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
+          //region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
+          region={{ latitude: 28.549445, longitude: -81.772854, latitudeDelta: 6.222, longitudeDelta: 1.911 }}  
         >
           {this.state.moviesDataSource.map((e, i) =>
             <MapView.Marker
@@ -107,7 +108,9 @@ export default class HomeScreen extends React.Component {
       </View>
 
 
-    ) : <Text>Fetching, Please wait....</Text>;
+    ) :   <View style={{ flex: 1, padding: 20 }}>
+    <ActivityIndicator />
+  </View>;
   }
 
   _maybeRenderDevelopmentModeWarning() {
