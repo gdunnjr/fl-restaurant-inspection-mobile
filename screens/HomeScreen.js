@@ -13,7 +13,7 @@ import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
 
-import { MapView } from 'expo';
+import { MapView, Callout } from 'expo';
 
 import { Constants, Location, Permissions } from 'expo';
 
@@ -26,29 +26,29 @@ export default class HomeScreen extends React.Component {
   state = {
     mapRegion: { latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 },
     locationResult: null,
-    location: {coords: { latitude: 37.78825, longitude: -122.4324}},
+    location: { coords: { latitude: 37.78825, longitude: -122.4324 } },
   };
 
   componentDidMount() {
     this._getLocationAsync();
     return fetch('http://3.89.110.44:5000/tc-health-inspection/v1/failedfirstinspection/county/monroe')
 
-    .then((response) => response.json())
-    .then((responseJson) => {
-      
-     
+      .then((response) => response.json())
+      .then((responseJson) => {
 
-      this.setState({
-        isLoading: false,
-        moviesDataSource: responseJson.inspections,
-      }, function(){
 
+
+        this.setState({
+          isLoading: false,
+          moviesDataSource: responseJson.inspections,
+        }, function () {
+
+        });
+
+      })
+      .catch((error) => {
+        console.error(error);
       });
-
-    })
-    .catch((error) =>{
-      console.error(error);
-    });
   }
 
   _handleMapRegionChange = mapRegion => {
@@ -56,79 +56,58 @@ export default class HomeScreen extends React.Component {
   };
 
   _getLocationAsync = async () => {
-   let { status } = await Permissions.askAsync(Permissions.LOCATION);
-   if (status !== 'granted') {
-     this.setState({
-       locationResult: 'Permission to access location was denied',
-       location,
-     });
-   }
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        locationResult: 'Permission to access location was denied',
+        location,
+      });
+    }
 
-   let location = await Location.getCurrentPositionAsync({});
-   this.setState({ locationResult: JSON.stringify(location), location, });
- };
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ locationResult: JSON.stringify(location), location, });
+  };
 
   render() {
 
-    console.log(this.state.moviesDataSource)   
-     console.log("test")
+    //console.log(this.state.moviesDataSource)
+    //console.log("test")
 
-    if(this.state.isLoading){
-      return(
-        <View style={{flex: 1, padding: 20}}>
-          <ActivityIndicator/>
+    if (this.state.isLoading) {
+      return (
+        <View style={{ flex: 1, padding: 20 }}>
+          <ActivityIndicator />
         </View>
       )
     }
-    
+
     return this.state.moviesDataSource instanceof Object ? (
 
-    //  <View style={{flex: 1, paddingTop:20}}>
-    //    <FlatList
-    //      data={this.state.moviesDataSource}
-    //      renderItem={({item}) => <Text>{item.Name}, {item.Violation}</Text>}
-    //      keyExtractor={({Id}, index) => Id}
-    //    />
-    //  </View>
+<View style={styles.container}>
+        <MapView style={styles.map}
+          region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
+        >
+          {this.state.moviesDataSource.map((e, i) =>
+            <MapView.Marker
+              coordinate={{
+                latitude: Number(e.Lat),
+                longitude: Number(e.Lng)
+              }}
+              title={e.Name}
+              description={e.Violation}
+              key={i}
+            ></MapView.Marker>
+            //   <SomeComponent key={i} label={e.label} value={e.value} />
+          )}
+        </MapView>
 
-    <View style={styles.container}>
-    
-
-    
-    <MapView style={styles.map}
-       region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
-       
-      >
-
-   
-
-
-
-  {this.state.moviesDataSource.map((e, i) =>  
- <MapView.Marker
- coordinate={{
- latitude: e.Lat,
- longitude: e.Lng
-}}
-title={e.Name}
-subtitle={e.Violation}
-key={i}
-/>
- //   <SomeComponent key={i} label={e.label} value={e.value} />
-  )}
+        <TouchableOpacity style={styles.overlay}>
+          <Text style={styles.text}>Click Here to Filter</Text>
+        </TouchableOpacity>
+      </View>
 
 
-
-
-      </MapView>
-
-   <TouchableOpacity style={styles.overlay}>
-    <Text style={styles.text}>Click Here to Filter</Text>
-  </TouchableOpacity>
-  </View>
-    
-      
-    )  : <Text>Fetching, Please wait....</Text>;
+    ) : <Text>Fetching, Please wait....</Text>;
   }
 
   _maybeRenderDevelopmentModeWarning() {
@@ -266,3 +245,4 @@ const styles = StyleSheet.create({
     color: '#2e78b7',
   },
 });
+
