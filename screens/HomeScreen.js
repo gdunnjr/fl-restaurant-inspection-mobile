@@ -7,15 +7,16 @@ import {
   Text,
   TouchableOpacity,
   View,
-  FlatList
+  Linking
 } from 'react-native';
 import { WebBrowser } from 'expo';
-
 import { MonoText } from '../components/StyledText';
-
 import { MapView, Callout } from 'expo';
-
 import { Constants, Location, Permissions } from 'expo';
+
+const onMarkerClick = (evt) => {
+  console.log("Clicked me!");
+};
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -35,9 +36,6 @@ export default class HomeScreen extends React.Component {
 
       .then((response) => response.json())
       .then((responseJson) => {
-
-
-
         this.setState({
           isLoading: false,
           moviesDataSource: responseJson.inspections,
@@ -83,11 +81,14 @@ export default class HomeScreen extends React.Component {
 
     return this.state.moviesDataSource instanceof Object ? (
 
-<View style={styles.container}>
+      <View style={styles.container}>
+
         <MapView style={styles.map}
+          // Use this to center on current location
           //region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
-          region={{ latitude: 28.549445, longitude: -81.772854, latitudeDelta: 6.222, longitudeDelta: 1.911 }}  
-        >
+
+          // Center in mid FL and zoom out so whole state is visible
+          region={{ latitude: 28.549445, longitude: -81.772854, latitudeDelta: 6.222, longitudeDelta: 1.911 }}>
           {this.state.moviesDataSource.map((e, i) =>
             <MapView.Marker
               coordinate={{
@@ -96,21 +97,25 @@ export default class HomeScreen extends React.Component {
               }}
               title={e.Name}
               description={e.Violation}
+              onCalloutPress={() => {
+                Linking.openURL('https://www.google.com');
+              }}               //{onMarkerClick}
               key={i}
-            ></MapView.Marker>
-            //   <SomeComponent key={i} label={e.label} value={e.value} />
+            >
+              <MapView.Callout tooltip style={styles.customView}>
+                <View style={styles.calloutText}>
+                  <Text>{e.Name}{"\n"}{e.Violation}{"\n"}{e.Date}</Text>
+                  <Text style={styles.fakeLinkText}>{"Click for more details..."}</Text>
+                </View>
+              </MapView.Callout>
+
+            </MapView.Marker>
           )}
         </MapView>
-
-        <TouchableOpacity style={styles.overlay}>
-          <Text style={styles.text}>Click Here to Filter</Text>
-        </TouchableOpacity>
       </View>
 
 
-    ) :   <View style={{ flex: 1, padding: 20 }}>
-    <ActivityIndicator />
-  </View>;
+    ) : <View style={{ flex: 1, padding: 20 }}><ActivityIndicator /></View>;
   }
 
   _maybeRenderDevelopmentModeWarning() {
@@ -148,6 +153,12 @@ export default class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  callout: {
+    flex: 1
+  },
+  link: {
+    flex: 1
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -158,6 +169,11 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0
+  },
+  customView: {
+    top: 10,
+    left: 10,
+    backgroundColor: 'rgba(255, 255, 255, 1)'
   },
   overlay: {
     position: 'absolute',
@@ -247,5 +263,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2e78b7',
   },
+  fakeLinkText: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+  }
 });
 
