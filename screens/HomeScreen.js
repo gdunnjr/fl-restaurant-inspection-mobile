@@ -98,7 +98,7 @@ export default class HomeScreen extends React.Component {
               title={e.Name}
               description={e.Violation}
               onCalloutPress={() => {
-                Linking.openURL('https://www.google.com');
+                Linking.openURL(e.DetailsURL);
               }}               //{onMarkerClick}
               key={i}
             >

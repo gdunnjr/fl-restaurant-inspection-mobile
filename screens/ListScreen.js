@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, SectionList, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { AppRegistry, Linking, FlatList, ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 
 
@@ -22,7 +22,23 @@ export default class ListScreen extends React.Component {
   };
 
   renderHeader = () => {
-    return <SearchBar placeholder="Type Here..." lightTheme round />;
+/*     return <SearchBar placeholder="Type Here H..." 
+            lightTheme round       
+            onChangeText={text => this.searchFilterFunction(text)}
+            autoCorrect={false}   />; */
+
+  };
+
+
+  searchFilterFunction = text => {    
+    const newData = this.arrayholder.filter(item => {      
+      const itemData = `${item.name.title.toUpperCase()}   
+      ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
+       const textData = text.toUpperCase();
+        
+       return itemData.indexOf(textData) > -1;    
+    });    
+    this.setState({ data: newData });  
   };
 
   constructor(props) {
@@ -51,16 +67,26 @@ export default class ListScreen extends React.Component {
       });
   }
 
-  
-  _onPressItem = (rowItem) => {
-  console.log('ListItem was selected');
-  // console.log(`User${rowItem}`);
-  console.log(`User${rowItem.Id}`);
-  this.setState({
-      selectedItem: rowItem.value
-  });
-  //  console.log(`User${this.state.selectedItem}`);
-}
+  GetItem (item) {
+   
+    Alert.alert(item.Name);
+   
+    }
+
+    getParsedDate(date){
+      var m = {Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, 
+           Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12 };
+      formatted_date = '';
+      if (date!='') {
+        date = String(date).split('-');
+        day = String(date[0]);
+        month_name = date[1];
+        year = String(date[2]);
+        formatted_date = m[month_name]+"/"+day+"/"+year;
+      }
+
+      return formatted_date ;
+    }
 
   render() {
 
@@ -79,9 +105,11 @@ export default class ListScreen extends React.Component {
       <View style={{ flex: 1, paddingTop: 20 }}>
 
         <SearchBar
-          placeholder="Type Here..."
-        //onChangeText={this.updateSearch}
-        //value={search}
+      autoCorrect={false} 
+      ref={component => this.messageInput = component} 
+      value={this.state.message} 
+      onChangeText={(text) => this.setState({ message: text })}
+      placeholder="Type your message here..."
         />
 
         <FlatList
@@ -92,12 +120,16 @@ export default class ListScreen extends React.Component {
             (
               <TouchableOpacity >
               <ListItem
-               onPress={this._onPressItem(item)}
+                onPress={() => {
+                  
+                  Linking.openURL(item.DetailsURL);
+                }}   
+                //onPress={this.GetItem.bind(this, item)}
                 id={item.Id}
                 //key={'${sectionID}-${rowID}'}
                 roundAvatar
                 title={item.Name}
-                subtitle={item.Violation}
+                subtitle={item.Violation+' '+this.getParsedDate(item.Date)}
                 ItemSeparatorComponent={this.renderSeparator}
                 ListHeaderComponent={this.renderHeader}
                 topDivider
