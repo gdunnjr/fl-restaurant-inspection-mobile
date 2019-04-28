@@ -65,7 +65,7 @@ export default class ListScreen extends React.Component {
         isLoading: false,
         dataSource: null,
       }),
-       console.log("Error ");
+       console.log(error);
      }).catch();
  }
 
