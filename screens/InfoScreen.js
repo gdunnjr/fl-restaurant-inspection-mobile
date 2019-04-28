@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity, Platform, Linking } from 'rea
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
-    title: 'About This App',
+    title: 'Info & Help',
   };
 
   constructor() {
@@ -13,11 +13,20 @@ export default class SettingsScreen extends React.Component {
   render() {
     return (<View style={styles.MainContainer}>
       <Text style={{ fontWeight: 'bold' }}>{"\n"}Florida Health Inspections App</Text>
-      <Text>{"\n"}This application shows failed first inspections in the last 30 days.
-    {"\n"}{"\n"}Data is obtained from TC Palm Restaurant Inspections:{"\n"}</Text>
+      <Text>{"\n"}Version 1.0 - 4/28/2019</Text>
+      <Text>
+        {"\n"}
+        Use the Home screen to show all first inspection failures in the last 30 days. 
+        Use the Search screen to find establishments that failed first inspection in the last 30 days. 
+        Clicking the restuarant name will open the tcplam inspection page for the restuarant where you can get all the details.
+        {"\n"}{"\n"}
+        Data is updated daily and is obtained from TC Palm Restaurant Inspections:
+        {"\n"}
+      </Text>
       <TouchableOpacity onPress={() => Linking.openURL('https://data.tcpalm.com/restaurant-inspections')}>
         <Text style={styles.fakeLinkText}>data.tcpalm.com/restaurant-inspections</Text>
       </TouchableOpacity>
+      <Text style={{ fontWeight: 'bold' }}>{"\n"}Look for an update soon that will also show restuarants with the most failures in the last 30 days and also show restaurants that passed inspections!</Text>
       <Text style={styles.textStyle}>{"\n"}{"\n"} {'\u00A9'} 2019 Gerald C Dunn Jr</Text>
 
     </View>

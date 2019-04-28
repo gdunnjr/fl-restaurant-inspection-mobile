@@ -1,8 +1,8 @@
 import React from 'react';
-import { Linking, FlatList, ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { Linking, FlatList, ActivityIndicator, TouchableOpacity, View, Text } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import { getParsedDate } from '../utils/Helpers.js'
-import { getAllInspectionsURL } from '../utils/Constants.js'
+import { getAllInspectionsURL, testURL } from '../utils/Constants.js'
 
 export default class ListScreen extends React.Component {
   static navigationOptions = {
@@ -43,29 +43,54 @@ export default class ListScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { isLoading: true, search: '' };
+    this.state = { isLoading: true, search: '',errorOccurred: false };
     this.arrayholder = [];
   }
 
-  componentDidMount() {
-      return fetch(getAllInspectionsURL)  
-      .then((response) => response.json())
-      .then((responseJson) => {
+fetch_with_timeout(url, timeout = 5000) {
+    return Promise.race([
+        fetch(url),
+        new Promise((resolve, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), timeout)
+        )
+    ]);
+}
 
-        this.setState({
-          isLoading: false,
-          dataSource: responseJson.inspections,
-        }, function () {
-          this.arrayholder = responseJson.inspections;
-        });
+getData() {
+    this.fetch_with_timeout(testURL)  
+     .then((response) => response.json())
+     .then((responseJson) => {
+       this.setState({
+         isLoading: false,
+         dataSource: responseJson.inspections,
+       }, function () {
+         this.arrayholder = responseJson.inspections;
+       });
+     })
+     .catch((error) => {
+      this.setState({
+        errorOccurred: true,
+        isLoading: false,
+        dataSource: null,
+      }),
+       console.log("Error ");
+     }).catch();
+ }
 
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+componentDidMount() {
+  this.getData();
+  console.log(this.state.errorOccurred)
+}
 
   render() {
+    if (this.state.errorOccurred) {
+      console.log("Now I'm here")
+      return (
+        <View style={{ flex: 1, padding: 20 }}>
+          <Text>An error occurred getting the data. Please check your data connection and try again.</Text>
+        </View>
+      )
+    }
 
     if (this.state.isLoading) {
       return (
@@ -91,19 +116,15 @@ export default class ListScreen extends React.Component {
         <FlatList
           data={this.state.dataSource}
           ItemSeparatorComponent={this.renderSeparator}
-          //renderItem={({item}) => <Text>{item.Name}</Text>}
-          renderItem={({ item }) => // <Text>{item.Name}, {item.Violation}</Text>
+          renderItem={({ item }) => 
             (
               <TouchableOpacity >
                 <ListItem
-                  onPress={() => {
-
-                    Linking.openURL(item.DetailsURL);
-                  }}
+                  onPress={() => { Linking.openURL(item.DetailsURL);}}
                   id={item.Id}
                   roundAvatar
                   title={item.Name}
-                  subtitle={item.Address.replace(/\s+/g, ' ').replace(item.Name, '').replace('(' + item.CountyName + ' county)', '').replace(' ,', ',') + '\n' + item.Violation + ' ' + getParsedDate(item.Date)}
+                  subtitle={item.Address.replace(/\s+/g, ' ').replace(item.Name+' ', '').replace('(' + item.CountyName + ' county)', '').replace(' ,', ',') + '\n' + item.Violation + ' ' + getParsedDate(item.Date)}
                   ItemSeparatorComponent={this.renderSeparator}
                   ListHeaderComponent={this.renderHeader}
                   topDivider

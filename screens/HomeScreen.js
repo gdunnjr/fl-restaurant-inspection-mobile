@@ -117,7 +117,8 @@ const styles = StyleSheet.create({
   customView: {
     top: 10,
     left: 10,
-    backgroundColor: 'rgba(255, 255, 255, 1)'
+    backgroundColor: 'lightgray'
+    //backgroundColor: 'rgba(255, 255, 255, 1)'
   },
   overlay: {
     position: 'absolute',
