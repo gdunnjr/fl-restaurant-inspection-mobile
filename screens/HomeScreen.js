@@ -1,26 +1,11 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Linking
-} from 'react-native';
-import { WebBrowser } from 'expo';
-import { MonoText } from '../components/StyledText';
-import { MapView, Callout } from 'expo';
-import { Constants, Location, Permissions } from 'expo';
-
-const onMarkerClick = (evt) => {
-  console.log("Clicked me!");
-};
+import { ActivityIndicator, Platform, StyleSheet, Text, View, Linking } from 'react-native';
+import { MapView, Location, Permissions } from 'expo';
+import { getParsedDate } from '../utils/Helpers.js'
+import { getAllInspectionsURL } from '../utils/Constants.js'
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    //header: null
     title: 'Home'
   };
 
@@ -32,13 +17,13 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this._getLocationAsync();
-    return fetch('http://3.89.110.44:5000/tc-health-inspection/v1/failedfirstinspection')
+    return fetch(getAllInspectionsURL)
 
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
           isLoading: false,
-          moviesDataSource: responseJson.inspections,
+          inspectionsDataSource: responseJson.inspections,
         }, function () {
 
         });
@@ -61,16 +46,13 @@ export default class HomeScreen extends React.Component {
         location,
       });
     }
-
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ locationResult: JSON.stringify(location), location, });
   };
 
   render() {
-
-    //console.log(this.state.moviesDataSource)
+    //console.log(this.state.inspectionsDataSource)
     //console.log("test")
-
     if (this.state.isLoading) {
       return (
         <View style={{ flex: 1, padding: 20 }}>
@@ -79,17 +61,15 @@ export default class HomeScreen extends React.Component {
       )
     }
 
-    return this.state.moviesDataSource instanceof Object ? (
-
+    return this.state.inspectionsDataSource instanceof Object ? (
       <View style={styles.container}>
-
         <MapView style={styles.map}
           // Use this to center on current location
           //region={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
 
           // Center in mid FL and zoom out so whole state is visible
           region={{ latitude: 28.549445, longitude: -81.772854, latitudeDelta: 6.222, longitudeDelta: 1.911 }}>
-          {this.state.moviesDataSource.map((e, i) =>
+          {this.state.inspectionsDataSource.map((e, i) =>
             <MapView.Marker
               coordinate={{
                 latitude: Number(e.Lat),
@@ -99,57 +79,21 @@ export default class HomeScreen extends React.Component {
               description={e.Violation}
               onCalloutPress={() => {
                 Linking.openURL(e.DetailsURL);
-              }}               //{onMarkerClick}
+              }}
               key={i}
             >
               <MapView.Callout tooltip style={styles.customView}>
                 <View style={styles.calloutText}>
-                  <Text>{e.Name}{"\n"}{e.Violation}{"\n"}{e.Date}</Text>
+                  <Text>{e.Name}{"\n"}{e.Violation}{"\n"}{getParsedDate(e.Date)}</Text>
                   <Text style={styles.fakeLinkText}>{"Click for more details..."}</Text>
                 </View>
               </MapView.Callout>
-
             </MapView.Marker>
           )}
         </MapView>
       </View>
-
-
     ) : <View style={{ flex: 1, padding: 20 }}><ActivityIndicator /></View>;
   }
-
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
-  };
 }
 
 const styles = StyleSheet.create({

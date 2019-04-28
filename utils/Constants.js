@@ -1,0 +1,1 @@
+export const getAllInspectionsURL = "http://107.22.48.117:5000/tc-health-inspection/v1/failedfirstinspection"
