@@ -1,8 +1,9 @@
 import React from 'react';
 import { Linking, FlatList, ActivityIndicator, TouchableOpacity, View, Text } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
-import { getParsedDate } from '../utils/Helpers.js'
-import { getAllInspectionsURL, testURL } from '../utils/Constants.js'
+import { getParsedDate, fetch_with_timeout } from '../utils/Helpers.js'
+import { URL_GET_ALL_FAILED_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
+  INFO_MSG_LOADING_DATA,ERROR_MSG_TIMEOUT } from '../utils/Constants.js'
 
 export default class ListScreen extends React.Component {
   static navigationOptions = {
@@ -47,17 +48,8 @@ export default class ListScreen extends React.Component {
     this.arrayholder = [];
   }
 
-fetch_with_timeout(url, timeout = 5000) {
-    return Promise.race([
-        fetch(url),
-        new Promise((resolve, reject) =>
-            setTimeout(() => reject(new Error('Timeout')), timeout)
-        )
-    ]);
-}
-
-getData() {
-    this.fetch_with_timeout(testURL)  
+  getData() {
+    fetch_with_timeout(URL_GET_ALL_FAILED_INSPECTIONS,20000)  
      .then((response) => response.json())
      .then((responseJson) => {
        this.setState({
@@ -84,18 +76,18 @@ componentDidMount() {
 
   render() {
     if (this.state.errorOccurred) {
-      console.log("Now I'm here")
       return (
         <View style={{ flex: 1, padding: 20 }}>
-          <Text>An error occurred getting the data. Please check your data connection and try again.</Text>
+          <Text>{ERROR_MSG_TIMEOUT}</Text>
         </View>
       )
     }
 
     if (this.state.isLoading) {
       return (
-        <View style={{ flex: 1, padding: 20 }}>
+        <View style={{ flex: 1, padding: 20, paddingTop: 20 }}>
           <ActivityIndicator />
+          <Text style={{ flex: 1}}>{"\n"+INFO_MSG_LOADING_DATA}</Text>
         </View>
       )
     }
@@ -110,9 +102,7 @@ componentDidMount() {
           placeholder="Type a Name Here"
           value={this.state.search}
           autoCorrect={false}
-
         />
-
         <FlatList
           data={this.state.dataSource}
           ItemSeparatorComponent={this.renderSeparator}
@@ -135,10 +125,9 @@ componentDidMount() {
               </TouchableOpacity>
             )
           }
-
           keyExtractor={(item, index) => item.Id}
         />
       </View>
-    ) : <View style={{ flex: 1, padding: 20 }}><ActivityIndicator /></View>;
+    ) : <View style={{ flex: 1, padding: 20 }}><Text style={{ padding: 20 }}>{"\n"+INFO_MSG_LOADING_DATA}</Text><ActivityIndicator /></View>;
   }
 }

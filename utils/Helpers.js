@@ -15,3 +15,12 @@ export function getParsedDate(date) {
 
     return formatted_date;
   }
+
+  export function fetch_with_timeout(url, timeout = 5000) {
+    return Promise.race([
+        fetch(url),
+        new Promise((resolve, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), timeout)
+        )
+    ]);
+}
