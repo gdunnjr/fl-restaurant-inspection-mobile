@@ -1,8 +1,8 @@
 import React from 'react';
-import { ActivityIndicator, Platform, StyleSheet, Text, View, Linking } from 'react-native';
+import { ActivityIndicator, Button, StyleSheet, Text, View, Linking } from 'react-native';
 import { MapView, Location, Permissions } from 'expo';
-import { getParsedDate, fetch_with_timeout } from '../utils/Helpers.js'
-import { URL_GET_ALL_FAILED_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
+import { getParsedDate_yyyy_mm_dd, fetch_with_timeout } from '../utils/Helpers.js'
+import { URL_GET_ALL_FAILED_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST, URL_GET_ALL_INSPECTIONS,
   INFO_MSG_LOADING_DATA,ERROR_MSG_TIMEOUT } from '../utils/Constants.js'
 
 export default class HomeScreen extends React.Component {
@@ -14,9 +14,9 @@ export default class HomeScreen extends React.Component {
     super(props);
     this.state = { isLoading: true, search: '',errorOccurred: false };
   }
-  
+
   getData() {
-    fetch_with_timeout(URL_GET_ALL_FAILED_INSPECTIONS,20000)  
+    fetch_with_timeout(URL_GET_ALL_INSPECTIONS,20000)  
      .then((response) => response.json())
      .then((responseJson) => {
        this.setState({
@@ -59,6 +59,7 @@ export default class HomeScreen extends React.Component {
     }
 
     return this.state.inspectionsDataSource instanceof Object ? (
+      
       <View style={styles.container}>
         <MapView style={styles.map}
           // Center in mid FL and zoom out so whole state is visible
@@ -72,13 +73,18 @@ export default class HomeScreen extends React.Component {
               title={e.Name}
               description={e.Violation}
               onCalloutPress={() => {
-                Linking.openURL(e.DetailsURL);
+                //Linking.openURL(e.DetailsURL);
+                "BLA";
               }}
               key={i}
+              pinColor={e.NumTotalViolations == "0" ? '#008000' : e.NumHighViolations == "0" ? '#fad201':  '#f44336' } //'#f44336'
             >
             <MapView.Callout tooltip style={styles.customView}>
                 <View style={styles.calloutText}>
-                  <Text>{e.Name}{"\n"}{e.Violation}{"\n"}{getParsedDate(e.Date)}</Text>
+                  {/* <Text>{e.Name}{"\n"}{e.Violation}{"\n"}{getParsedDate(e.Date)}</Text> */}
+                  <Text>{e.Name}{"\n"}{e.Violation}{"\n"}{getParsedDate_yyyy_mm_dd(e.Date)}</Text>
+                  {/* <Text>{e.Name}</Text> */}
+
                   <Text style={styles.fakeLinkText}>{"Click for more details..."}</Text>
                 </View>
               </MapView.Callout>
