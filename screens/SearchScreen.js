@@ -1,8 +1,8 @@
 import React from 'react';
 import { Linking, FlatList, ActivityIndicator, TouchableOpacity, View, Text } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
-import { getParsedDate, fetch_with_timeout } from '../utils/Helpers.js'
-import { URL_GET_ALL_FAILED_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
+import { getParsedDate_yyyy_mm_dd, fetch_with_timeout } from '../utils/Helpers.js'
+import { URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
   INFO_MSG_LOADING_DATA,ERROR_MSG_TIMEOUT } from '../utils/Constants.js'
 
 export default class ListScreen extends React.Component {
@@ -49,7 +49,7 @@ export default class ListScreen extends React.Component {
   }
 
   getData() {
-    fetch_with_timeout(URL_GET_ALL_FAILED_INSPECTIONS,20000)  
+    fetch_with_timeout(URL_GET_ALL_INSPECTIONS,20000)  
      .then((response) => response.json())
      .then((responseJson) => {
        this.setState({
@@ -110,11 +110,17 @@ componentDidMount() {
             (
               <TouchableOpacity >
                 <ListItem
+                  backgroundColor= {'#f44336'}
+                  badge={{ value: '', textStyle: { color: 'orange' }, badgeStyle: { backgroundColor: item.NumTotalViolations == "0" ? '#008000' : item.NumHighViolations == "0" ? '#fad201':  '#f44336' , marginTop: -20 }  }}
                   onPress={() => { Linking.openURL(item.DetailsURL);}}
                   id={item.Id}
                   roundAvatar
                   title={item.Name}
-                  subtitle={item.Address.replace(/\s+/g, ' ').replace(item.Name+' ', '').replace('(' + item.CountyName + ' county)', '').replace(' ,', ',') + '\n' + item.Violation + ' ' + getParsedDate(item.Date)}
+                  subtitleStyle={{fontSize:12}}
+                  //TiteStyle={{ color: 'white', fontWeight: 'bold' }
+                  subtitle={item.Address +' '+ item.City + ' '+ item.Zip+ '\n' + getParsedDate_yyyy_mm_dd(item.Date) + ' ' + item.Violation }
+                  subtitleStyle={{fontSize:10}}
+                  //subtitle={item.Address.replace(/\s+/g, ' ').replace(item.Name+' ', '').replace('(' + item.CountyName + ' county)', '').replace(' ,', ',') + '\n' + item.Violation + ' ' + getParsedDate_yyyy_mm_dd(item.Date)}
                   ItemSeparatorComponent={this.renderSeparator}
                   ListHeaderComponent={this.renderHeader}
                   topDivider
