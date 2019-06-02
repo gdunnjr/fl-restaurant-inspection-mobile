@@ -74,7 +74,8 @@ export default class HomeScreen extends React.Component {
               description={e.Violation}
               onCalloutPress={() => {
                 //Linking.openURL(e.DetailsURL);
-                "BLA";
+                console.log('Here');
+                this.props.navigation.navigate("Details", { topic: "React Navigation" });
               }}
               key={i}
               pinColor={e.NumTotalViolations == "0" ? '#008000' : e.NumHighViolations == "0" ? '#fad201':  '#f44336' } //'#f44336'

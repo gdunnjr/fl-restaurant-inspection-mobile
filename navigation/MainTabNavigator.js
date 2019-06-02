@@ -6,9 +6,11 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import InfoScreen from '../screens/InfoScreen';
+import DetailsScreen from '../screens/DetailsScreen';
 
 const HomeStack = createStackNavigator({
   Home: { screen: HomeScreen},
+  Details: {screen: DetailsScreen}
 });
 
 HomeStack.navigationOptions = {
@@ -23,6 +25,7 @@ HomeStack.navigationOptions = {
 
 const LinksStack = createStackNavigator({
   Links: SearchScreen,
+  Details: {screen: DetailsScreen}
 });
 
 LinksStack.navigationOptions = {
@@ -52,6 +55,13 @@ SettingsStack.navigationOptions = {
     />
   ),
 };
+
+const AppNavigator = createStackNavigator({
+  Details : {
+    screen : DetailsScreen
+  }
+});
+
 
 export default createBottomTabNavigator({
   HomeStack,

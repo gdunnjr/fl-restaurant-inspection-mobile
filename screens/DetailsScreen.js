@@ -7,7 +7,7 @@ import { URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
 
 export default class ListScreen extends React.Component {
   static navigationOptions = {
-    title: 'Search'
+    title: 'Details'
   };
 
   renderSeparator = () => {
@@ -112,7 +112,7 @@ componentDidMount() {
                 <ListItem
                   backgroundColor= {'#f44336'}
                   badge={{ value: '', textStyle: { color: 'orange' }, badgeStyle: { backgroundColor: item.NumTotalViolations == "0" ? '#008000' : item.NumHighViolations == "0" ? '#fad201':  '#f44336' , marginTop: -20 }  }}
-                  onPress={() => { this.props.navigation.navigate("Details", { topic: "React Navigation" });}}
+                  onPress={() => { Linking.openURL(item.DetailsURL);}}
                   id={item.Id}
                   roundAvatar
                   title={item.Name}
@@ -125,9 +125,8 @@ componentDidMount() {
                   ListHeaderComponent={this.renderHeader}
                   topDivider
                   bottomDivider
-                  chevronStyle={{color: 'black', fontSize:12, fontWeight: 'bold'}}
-                //  chevron
-                  rightIcon={{ name: 'chevron-right', type: 'font-awesome' }}
+                  chevron
+                //                rightIcon={{ name: 'arrow-right', type: 'font-awesome', style: { marginRight: 10, fontSize: 15 } }}
                 />
               </TouchableOpacity>
             )
