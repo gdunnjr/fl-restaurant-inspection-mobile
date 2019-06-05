@@ -2,7 +2,7 @@ import React from 'react';
 import { Linking, FlatList, ActivityIndicator, TouchableOpacity, View, Text } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import { getParsedDate_yyyy_mm_dd, fetch_with_timeout } from '../utils/Helpers.js'
-import { URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
+import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
   INFO_MSG_LOADING_DATA,ERROR_MSG_TIMEOUT } from '../utils/Constants.js'
 
 export default class ListScreen extends React.Component {
@@ -46,10 +46,12 @@ export default class ListScreen extends React.Component {
     super(props);
     this.state = { isLoading: true, search: '',errorOccurred: false };
     this.arrayholder = [];
+    this.inspectionVisitID = props.navigation.state.params.inspectionVisitID;
+    console.log(props.navigation.state.params)
   }
 
   getData() {
-    fetch_with_timeout(URL_GET_ALL_INSPECTIONS,20000)  
+    fetch_with_timeout(URL_GET_INSPECTION_DETAILS+this.inspectionVisitID,20000)  
      .then((response) => response.json())
      .then((responseJson) => {
        this.setState({
@@ -57,6 +59,7 @@ export default class ListScreen extends React.Component {
          dataSource: responseJson.inspections,
        }, function () {
          this.arrayholder = responseJson.inspections;
+         console.log( responseJson.inspections);
        });
      })
      .catch((error) => {
