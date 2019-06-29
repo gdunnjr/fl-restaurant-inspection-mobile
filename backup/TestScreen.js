@@ -3,11 +3,13 @@ import { Linking, FlatList, ActivityIndicator, TouchableOpacity, View, Text, Sty
 import { ListItem, SearchBar } from 'react-native-elements';
 import { getParsedDate_yyyy_mm_dd, fetch_with_timeout } from '../utils/Helpers.js'
 import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
-  INFO_MSG_LOADING_DATA,ERROR_MSG_TIMEOUT } from '../utils/Constants.js'
+  INFO_MSG_LOADING_DATA,ERROR_MSG_TIMEOUT, CODES_DEFINITION } from '../utils/Constants.js'
+
+import Table  from '../utils/Table.js'
 
   export default class ListScreen extends React.Component {
   static navigationOptions = {
-    title: 'Details'
+    title: 'Test'
   };
 
   renderSeparator = () => {
@@ -26,6 +28,7 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
     clear = () => {
     this.search.clear();
   };
+
   SearchFilterFunction(text) {
     //passing the inserted text in textinput
     const newData = this.arrayholder.filter(function (item) {
@@ -42,29 +45,32 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
     });
   }
 
-//   renderTableData() {
-//     return this.state.dataSource.map((inspection, index) => {
-//        const { Id, Name, Date, Violation } = inspection //destructuring
-//        return (
-//           <tr key={Id}>
-//              <td>{Id}</td>
-//              <td>{Name}</td>
-//              <td>{Date}</td>
-//              <td>{Violation}</td>
-//           </tr>
-//        )
-//     })
-//  }
+  renderTableData() {
+    return this.state.dataSource.map((CODES_DEFINITION, index) => {
+       const { code, id, desription} = CODES_DEFINITION //destructuring
+       console.log('In renderTabeleData....');
+       //console.log({id});
+       return (
+        <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10, paddingBottom:10 }}>
+           <View style={{ flex: 1, alignSelf: 'stretch' }}><Text style={{ fontSize: 10 }}>{description}</Text></View>
+          <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>{id}</Text></View>
+        </View>
+       )
+    })
+ }
 
   constructor(props) {
     super(props);
     this.state = { isLoading: true, search: '',errorOccurred: false };
     this.arrayholder = [];
-    this.inspectionVisitID = props.navigation.state.params.inspectionVisitID;
+    this.inspectionVisitID = '6786573';
+    //this.inspectionVisitID = props.navigation.state.params.inspectionVisitID;
     console.log(props.navigation.state.params)
   }
 
-
+  getCodeArray() {
+    
+  }
   
   getData() {
     fetch_with_timeout(URL_GET_INSPECTION_DETAILS+this.inspectionVisitID,20000)  
@@ -76,6 +82,7 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
        }, function () {
          this.arrayholder = responseJson.inspections;
          console.log( responseJson.inspections);
+         //getCodeArray(responseJson.inspections);
        });
      })
      .catch((error) => {
@@ -122,38 +129,8 @@ componentDidMount() {
      }}>
       {/* <View style={{ flex: 1, paddingTop: 20 }}>
    */}
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10, paddingBottom:10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text style={{ fontSize: 10}}>test</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>This is column 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row 3 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>This is a byunch of text in column 1. A whole bunch.</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row 4 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row5 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Six col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Six col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Seven col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Eight col 2</Text></View>
-      </View>
+   
+    {this.renderTableData()}
         {/* <Text style={styles.title}>react-native-simple-table</Text>
         <Table bodyStyle={{ color: 'aqua', fontSize:10}} height={320} columnWidth={60} columns={[{
     title: 'Id',

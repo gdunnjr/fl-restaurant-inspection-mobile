@@ -5,6 +5,8 @@ import { getParsedDate_yyyy_mm_dd, fetch_with_timeout } from '../utils/Helpers.j
 import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
   INFO_MSG_LOADING_DATA,ERROR_MSG_TIMEOUT } from '../utils/Constants.js'
 
+import Table  from '../utils/Table.js'
+
   export default class ListScreen extends React.Component {
   static navigationOptions = {
     title: 'Details'
