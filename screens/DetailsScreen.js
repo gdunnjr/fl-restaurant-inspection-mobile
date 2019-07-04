@@ -10,51 +10,15 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
     title: 'Details'
   };
 
-  renderSeparator = () => {
+  FlatListItemSeparator = () => {
     return (
-      <View
-        style={{
-          height: 1,
-          width: "100%",
-          backgroundColor: "#CED0CE",
-          marginLeft: "0%"
-        }}
-      />
+      <View style={{ height: 1, width: "100%", backgroundColor: "#607D8B" }} />
     );
   };
 
     clear = () => {
     this.search.clear();
   };
-  SearchFilterFunction(text) {
-    //passing the inserted text in textinput
-    const newData = this.arrayholder.filter(function (item) {
-      //applying filter for the inserted text in search bar
-      const itemData = item.Name ? item.Name.toUpperCase() : ''.toUpperCase();
-      const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
-    });
-    this.setState({
-      //setting the filtered newData on datasource
-      //After setting the data it will automatically re-render the view
-      dataSource: newData,
-      search: text,
-    });
-  }
-
-//   renderTableData() {
-//     return this.state.dataSource.map((inspection, index) => {
-//        const { Id, Name, Date, Violation } = inspection //destructuring
-//        return (
-//           <tr key={Id}>
-//              <td>{Id}</td>
-//              <td>{Name}</td>
-//              <td>{Date}</td>
-//              <td>{Violation}</td>
-//           </tr>
-//        )
-//     })
-//  }
 
   constructor(props) {
     super(props);
@@ -67,6 +31,7 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
 
   
   getData() {
+    
     fetch_with_timeout(URL_GET_INSPECTION_DETAILS+this.inspectionVisitID,20000)  
      .then((response) => response.json())
      .then((responseJson) => {
@@ -75,7 +40,8 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
          dataSource: responseJson.inspections,
        }, function () {
          this.arrayholder = responseJson.inspections;
-         console.log( responseJson.inspections);
+         console.log( responseJson.inspections[0].violations);
+         console.log(URL_GET_INSPECTION_DETAILS+this.inspectionVisitID)
        });
      })
      .catch((error) => {
@@ -85,6 +51,7 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
         dataSource: null,
       }),
        console.log(error);
+       console.log(URL_GET_INSPECTION_DETAILS+this.inspectionVisitID)
      }).catch();
  }
 
@@ -115,99 +82,31 @@ componentDidMount() {
 
     return this.state.dataSource instanceof Object ? (
     
-      <ScrollView
-      contentContainerStyle={{
-        flex: 1,
-        justifyContent: 'space-between'
-     }}>
-      {/* <View style={{ flex: 1, paddingTop: 20 }}>
-   */}
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10, paddingBottom:10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text style={{ fontSize: 10}}>test</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>This is column 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row 3 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>This is a byunch of text in column 1. A whole bunch.</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row 4 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row5 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Six col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Six col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Seven col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Eight col 2</Text></View>
-      </View>
-        {/* <Text style={styles.title}>react-native-simple-table</Text>
-        <Table bodyStyle={{ color: 'aqua', fontSize:10}} height={320} columnWidth={60} columns={[{
-    title: 'Id',
-    dataIndex: 'Id',
-    width: 105
-  },
-  {
-    title: 'Name',
-    dataIndex: 'Name',
-    width: 140
-  }]} dataSource={this.state.dataSource} /> */}
+      <View style={styles.container}>
+        <Text style={{ fontSize: 12}}> { this.state.dataSource.Name }</Text>
+        
+        <Text style={{ fontSize: 9 }}> † Denotes Risk Factors </Text>
+        <Text style={{ fontSize: 9 }}> * Denotes good retail practices that are considered a primary concern that must be corrected immediately. </Text>
+        <Text></Text>
+        <Text stype={{ fontSize: 12, borderWidth: 1, borderColor: 'black' }}> Violation and Number Found</Text>
 
-
-        {/* <SearchBar
-          round
-          searchIcon={{ size: 24 }}
-          onChangeText={text => this.SearchFilterFunction(text)}
-          onClear={text => this.SearchFilterFunction('')}
-          placeholder="Type a Name Here"
-          value={this.state.search}
-          autoCorrect={false}
-        />
         <FlatList
-          data={this.state.dataSource}
-          ItemSeparatorComponent={this.renderSeparator}
-          renderItem={({ item }) => 
-            (
-              <TouchableOpacity >
-                <ListItem
-                  backgroundColor= {'#f44336'}
-                  badge={{ value: '', textStyle: { color: 'orange' }, badgeStyle: { backgroundColor: item.NumTotalViolations == "0" ? '#008000' : item.NumHighViolations == "0" ? '#fad201':  '#f44336' , marginTop: -20 }  }}
-                  onPress={() => { Linking.openURL(item.DetailsURL);}}
-                  id={item.Id}
-                  roundAvatar
-                  title={item.Name}
-                  subtitleStyle={{fontSize:12}}
-                  //TiteStyle={{ color: 'white', fontWeight: 'bold' }
-                  subtitle={item.Address +' '+ item.City + ' '+ item.Zip+ '\n' + getParsedDate_yyyy_mm_dd(item.Date) + ' ' + item.Violation }
-                  subtitleStyle={{fontSize:10}}
-                  //subtitle={item.Address.replace(/\s+/g, ' ').replace(item.Name+' ', '').replace('(' + item.CountyName + ' county)', '').replace(' ,', ',') + '\n' + item.Violation + ' ' + getParsedDate_yyyy_mm_dd(item.Date)}
-                  ItemSeparatorComponent={this.renderSeparator}
-                  ListHeaderComponent={this.renderHeader}
-                  topDivider
-                  bottomDivider
-                  chevron
-                //                rightIcon={{ name: 'arrow-right', type: 'font-awesome', style: { marginRight: 10, fontSize: 15 } }}
-                />
-              </TouchableOpacity>
-            )
+          data={this.state.dataSource[0].violations}
+          
+          ItemSeparatorComponent={this.FlatListItemSeparator}
+          renderItem={({ item }) =>
+
+            <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10, paddingBottom: 10 }}>
+              <View style={{ flex: 1, alignSelf: 'stretch' }}><Text style={{ fontSize: 10 }}>{item.ViolationDesc}</Text></View>
+              <View style={{ flex: 0, alignItems: 'right', justifyContent: 'right', margin: 10 }}><Text style={{ fontSize: 10 }}>{item.ViolationCount}</Text></View>
+            </View>
+
           }
-          keyExtractor={(item, index) => item.Id}
-        /> */}
-      {/* </View> */}
-      </ScrollView>
+        />
+      </View>
+
+
+   
     
     ) : <View style={{ flex: 1, padding: 20 }}><Text style={{ padding: 20 }}>{"\n"+INFO_MSG_LOADING_DATA}</Text><ActivityIndicator /></View>;
   }
@@ -228,29 +127,16 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   
-  row: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '100%'
+  headerText: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10,
+    fontWeight: "bold"
   },
-  column: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexBasis: '100%',
-    flex: 1
-  }
-,
- 
-box1: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  box3: {
-    backgroundColor: 'orange'
-  },
-  two: {
-    flex: 2
+  item: {
+    padding: 10,
+    fontSize: 20,
+    height: 45,
   }
 });
 
