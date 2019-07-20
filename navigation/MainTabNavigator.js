@@ -80,10 +80,9 @@ const AppNavigator = createStackNavigator({
   }
 });
 
-
 export default createBottomTabNavigator({
-  TestStack,
   HomeStack,
   LinksStack,
-  SettingsStack
+  SettingsStack,
+  TestStack,
 });

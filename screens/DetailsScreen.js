@@ -4,57 +4,22 @@ import { ListItem, SearchBar } from 'react-native-elements';
 import { getParsedDate_yyyy_mm_dd, fetch_with_timeout } from '../utils/Helpers.js'
 import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST,
   INFO_MSG_LOADING_DATA,ERROR_MSG_TIMEOUT } from '../utils/Constants.js'
+import { TabRouter } from 'react-navigation';
 
   export default class ListScreen extends React.Component {
   static navigationOptions = {
     title: 'Details'
   };
 
-  renderSeparator = () => {
+  FlatListItemSeparator = () => {
     return (
-      <View
-        style={{
-          height: 1,
-          width: "100%",
-          backgroundColor: "#CED0CE",
-          marginLeft: "0%"
-        }}
-      />
+      <View style={{ height: 1, width: "100%", backgroundColor: "#607D8B" }} />
     );
   };
 
     clear = () => {
     this.search.clear();
   };
-  SearchFilterFunction(text) {
-    //passing the inserted text in textinput
-    const newData = this.arrayholder.filter(function (item) {
-      //applying filter for the inserted text in search bar
-      const itemData = item.Name ? item.Name.toUpperCase() : ''.toUpperCase();
-      const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
-    });
-    this.setState({
-      //setting the filtered newData on datasource
-      //After setting the data it will automatically re-render the view
-      dataSource: newData,
-      search: text,
-    });
-  }
-
-//   renderTableData() {
-//     return this.state.dataSource.map((inspection, index) => {
-//        const { Id, Name, Date, Violation } = inspection //destructuring
-//        return (
-//           <tr key={Id}>
-//              <td>{Id}</td>
-//              <td>{Name}</td>
-//              <td>{Date}</td>
-//              <td>{Violation}</td>
-//           </tr>
-//        )
-//     })
-//  }
 
   constructor(props) {
     super(props);
@@ -67,6 +32,7 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
 
   
   getData() {
+    
     fetch_with_timeout(URL_GET_INSPECTION_DETAILS+this.inspectionVisitID,20000)  
      .then((response) => response.json())
      .then((responseJson) => {
@@ -75,7 +41,8 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
          dataSource: responseJson.inspections,
        }, function () {
          this.arrayholder = responseJson.inspections;
-         console.log( responseJson.inspections);
+         console.log( responseJson.inspections[0]);
+         console.log(URL_GET_INSPECTION_DETAILS+this.inspectionVisitID)
        });
      })
      .catch((error) => {
@@ -85,6 +52,7 @@ import { URL_GET_INSPECTION_DETAILS, URL_GET_ALL_INSPECTIONS, URL_GET_ALL_FAILED
         dataSource: null,
       }),
        console.log(error);
+       console.log(URL_GET_INSPECTION_DETAILS+this.inspectionVisitID)
      }).catch();
  }
 
@@ -94,8 +62,6 @@ componentDidMount() {
 }
 
   render() {
-
-
     if (this.state.errorOccurred) {
       return (
         <View style={{ flex: 1, padding: 20 }}>
@@ -113,101 +79,81 @@ componentDidMount() {
       )
     }
 
+
+    function List(ds) {
+      if (ds[0].NumTotalViolations == '0') {
+        return null
+      }
+ 
+      return (
+        <div>
+         {/* <Text style={{ fontSize: 12, fontWeight: 'bold'}}> {'Violation Details'} </Text>
+         <Text style={{ fontSize: 9, paddingLeft: 10, fontStyle: 'italic' }}>{'† Denotes Risk Factors'} </Text>
+        <Text style={{ fontSize: 9,  paddingLeft: 10, fontStyle: 'italic' }}>{'* Denotes good retail practices that are considered a primary concern that must be corrected immediately.'} </Text>
+        <View style={{ paddingTop: 10, borderBottomColor: 'black', borderBottomWidth: 1,}}/>
+        <FlatList
+          data={ds[0].violations}
+          ItemSeparatorComponent={this.FlatListItemSeparator}
+          
+          renderItem={({ item }) =>
+
+            <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
+              <View style={{ flex: 1, alignSelf: 'stretch' }}><Text style={{ fontSize: 10 }}>{item.ViolationDesc}</Text></View>
+              <View style={{ flex: 0, alignItems: 'right', justifyContent: 'right', margin: 10 }}><Text style={{ fontSize: 10 }}>{item.ViolationCount}</Text></View>
+            </View>
+
+          }
+        /> */}
+        <View style={{ paddingTop: 10, borderBottomColor: 'black', borderBottomWidth: 1,}}/>
+        </div>
+      );
+
+    }
+
     return this.state.dataSource instanceof Object ? (
     
-      <ScrollView
-      contentContainerStyle={{
-        flex: 1,
-        justifyContent: 'space-between'
-     }}>
-      {/* <View style={{ flex: 1, paddingTop: 20 }}>
-   */}
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10, paddingBottom:10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text style={{ fontSize: 10}}>test</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>This is column 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row 3 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>This is a byunch of text in column 1. A whole bunch.</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row 4 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row5 col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Six col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Six col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Seven col 2</Text></View>
-      </View>
-      <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10 }}>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>dff</Text></View>
-        <View style={{ flex: 1, alignSelf: 'stretch' }}><Text>Row Eight col 2</Text></View>
-      </View>
-        {/* <Text style={styles.title}>react-native-simple-table</Text>
-        <Table bodyStyle={{ color: 'aqua', fontSize:10}} height={320} columnWidth={60} columns={[{
-    title: 'Id',
-    dataIndex: 'Id',
-    width: 105
-  },
-  {
-    title: 'Name',
-    dataIndex: 'Name',
-    width: 140
-  }]} dataSource={this.state.dataSource} /> */}
+      <View style={styles.container}>
+        <Text style={{ fontSize: 12, fontWeight: 'bold'}}> { this.state.dataSource[0].Name }</Text>
+        <Text style={{ fontSize: 12}}> { this.state.dataSource[0].Address + 
+          this.state.dataSource[0].City + this.state.dataSource[0].PostalCode }</Text>
+         <Text style={{ fontSize: 12}}> { 'Inspection Date: ' + this.state.dataSource[0].Name }</Text>
+        <Text></Text>
 
+        {/* <Text style={{ fontSize: 12, alignSelf: 'flex-start', fontWeight: 'bold', backgroundColor: this.state.dataSource[0].NumTotalViolations == '0' ? '#008000' : this.state.dataSource[0].NumHighViolations == "0" ? '#fad201':  '#f44336'  }}> {'Total Violations: ' + this.state.dataSource[0].NumTotalViolations}</Text> */}
+        <Text style={{ fontSize: 12, alignSelf: 'flex-start', fontWeight: 'bold', backgroundColor: this.state.dataSource[0].NumTotalViolations == '0' ? '#008000' : '#e5e5e5' }}> {'Total Violations: ' + this.state.dataSource[0].NumTotalViolations}</Text> 
+        <Text style={{ fontSize: 12, alignSelf: 'flex-start', paddingLeft:10, backgroundColor: this.state.dataSource[0].NumHighViolations != '0' ? '#f44336': '#e5e5e5'  }}> {'High Risk Violations: ' + this.state.dataSource[0].NumHighViolations}</Text>
+        <Text style={{ fontSize: 12, alignSelf: 'flex-start', paddingLeft:10, backgroundColor: this.state.dataSource[0].NumIntermediateViolations != '0' ? '#fad201': '#e5e5e5'  }}> {'Intermediate Violations: ' + this.state.dataSource[0].NumIntermediateViolations}</Text>
+        <Text style={{ fontSize: 12, alignSelf: 'flex-start', paddingLeft:10, backgroundColor: this.state.dataSource[0].NumBasicViolations != '0' ? '#fad201': '#e5e5e5' }}> {'Basic Violations: ' + this.state.dataSource[0].NumBasicViolations}</Text>
+        
+        <Text></Text>
+          {/* {List("0",this.state.dataSource[0].Name )}
+          {List("2",this.state.dataSource[0].Name )} */}
 
-        {/* <SearchBar
-          round
-          searchIcon={{ size: 24 }}
-          onChangeText={text => this.SearchFilterFunction(text)}
-          onClear={text => this.SearchFilterFunction('')}
-          placeholder="Type a Name Here"
-          value={this.state.search}
-          autoCorrect={false}
-        />
+           {List(this.state.dataSource)}
+      
+        <Text style={{ fontSize: 12, fontWeight: 'bold'}}> Violation Details </Text>
+        <Text style={{ fontSize: 9, paddingLeft: 10, fontStyle: 'italic' }}>† Denotes Risk Factors </Text>
+        <Text style={{ fontSize: 9,  paddingLeft: 10, fontStyle: 'italic' }}>* Denotes good retail practices that are considered a primary concern that must be corrected immediately. </Text>
+        <View style={{ paddingTop: 10, borderBottomColor: 'black', borderBottomWidth: 1,}}/>
+      
+
+      
         <FlatList
-          data={this.state.dataSource}
-          ItemSeparatorComponent={this.renderSeparator}
-          renderItem={({ item }) => 
-            (
-              <TouchableOpacity >
-                <ListItem
-                  backgroundColor= {'#f44336'}
-                  badge={{ value: '', textStyle: { color: 'orange' }, badgeStyle: { backgroundColor: item.NumTotalViolations == "0" ? '#008000' : item.NumHighViolations == "0" ? '#fad201':  '#f44336' , marginTop: -20 }  }}
-                  onPress={() => { Linking.openURL(item.DetailsURL);}}
-                  id={item.Id}
-                  roundAvatar
-                  title={item.Name}
-                  subtitleStyle={{fontSize:12}}
-                  //TiteStyle={{ color: 'white', fontWeight: 'bold' }
-                  subtitle={item.Address +' '+ item.City + ' '+ item.Zip+ '\n' + getParsedDate_yyyy_mm_dd(item.Date) + ' ' + item.Violation }
-                  subtitleStyle={{fontSize:10}}
-                  //subtitle={item.Address.replace(/\s+/g, ' ').replace(item.Name+' ', '').replace('(' + item.CountyName + ' county)', '').replace(' ,', ',') + '\n' + item.Violation + ' ' + getParsedDate_yyyy_mm_dd(item.Date)}
-                  ItemSeparatorComponent={this.renderSeparator}
-                  ListHeaderComponent={this.renderHeader}
-                  topDivider
-                  bottomDivider
-                  chevron
-                //                rightIcon={{ name: 'arrow-right', type: 'font-awesome', style: { marginRight: 10, fontSize: 15 } }}
-                />
-              </TouchableOpacity>
-            )
+          data={this.state.dataSource[0].violations}
+          ItemSeparatorComponent={this.FlatListItemSeparator}
+          
+          renderItem={({ item }) =>
+
+            <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
+              <View style={{ flex: 1, alignSelf: 'stretch' }}><Text style={{ fontSize: 10 }}>{item.ViolationDesc}</Text></View>
+              <View style={{ flex: 0, alignItems: 'right', justifyContent: 'right', margin: 10 }}><Text style={{ fontSize: 10 }}>{item.ViolationCount}</Text></View>
+            </View>
+
           }
-          keyExtractor={(item, index) => item.Id}
-        /> */}
-      {/* </View> */}
-      </ScrollView>
+        />
+        <View style={{ paddingTop: 10, borderBottomColor: 'black', borderBottomWidth: 1,}}/>
+      </View>
+      
     
     ) : <View style={{ flex: 1, padding: 20 }}><Text style={{ padding: 20 }}>{"\n"+INFO_MSG_LOADING_DATA}</Text><ActivityIndicator /></View>;
   }
@@ -221,6 +167,7 @@ const styles = StyleSheet.create({
       },
       android: {}
     }),
+    backgroundColor: "#e5e5e5"
   },
   title: {
     fontSize: 18,
@@ -228,29 +175,16 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   
-  row: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '100%'
+  headerText: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10,
+    fontWeight: "bold"
   },
-  column: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexBasis: '100%',
-    flex: 1
-  }
-,
- 
-box1: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  box3: {
-    backgroundColor: 'orange'
-  },
-  two: {
-    flex: 2
+  item: {
+    padding: 10,
+    fontSize: 20,
+    height: 45,
   }
 });
 
