@@ -85,9 +85,9 @@ export default class ListScreen extends React.Component {
       <ScrollView>
         <View style={styles.container}>
           <Text style={{ fontSize: 12, fontWeight: 'bold' }}> {this.state.dataSource[0].Name}</Text>
-          <Text style={{ fontSize: 12 }}> {this.state.dataSource[0].Address +
-            this.state.dataSource[0].City + this.state.dataSource[0].PostalCode}</Text>
-          <Text style={{ fontSize: 12 }}> {'Inspection Date: ' + this.state.dataSource[0].Name}</Text>
+          <Text style={{ fontSize: 12 }}> {this.state.dataSource[0].Address + '\n' +
+            this.state.dataSource[0].City + ' ' + this.state.dataSource[0].Zip}</Text>
+          <Text style={{ fontSize: 12 }}> {'Inspection Date: ' + getParsedDate_yyyy_mm_dd(this.state.dataSource[0].Date)}</Text>
           <Text></Text>
 
           <Text style={{ fontSize: 12, alignSelf: 'flex-start', fontWeight: 'bold', backgroundColor: this.state.dataSource[0].NumTotalViolations == '0' ? '#008000' : '#e5e5e5' }}> {'Total Violations: ' + this.state.dataSource[0].NumTotalViolations}</Text>
