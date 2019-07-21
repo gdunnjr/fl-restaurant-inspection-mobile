@@ -112,7 +112,7 @@ componentDidMount() {
                 <ListItem
                   backgroundColor= {'#f44336'}
                   badge={{ value: '', textStyle: { color: 'orange' }, badgeStyle: { backgroundColor: item.NumTotalViolations == "0" ? '#008000' : item.NumHighViolations == "0" ? '#fad201':  '#f44336' , marginTop: -20 }  }}
-                  onPress={() => { this.props.navigation.navigate("Details", { topic: "React Navigation" });}}
+                  onPress={() => { this.props.navigation.navigate("Details", { inspectionVisitID: item.InspectionVisitID });}}
                   id={item.Id}
                   roundAvatar
                   title={item.Name}
