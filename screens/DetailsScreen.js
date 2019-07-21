@@ -85,18 +85,18 @@ export default class ListScreen extends React.Component {
       <ScrollView>
         <View style={styles.container}>
           <Text style={{ fontSize: 12, fontWeight: 'bold' }}> {this.state.dataSource[0].Name}</Text>
-          <Text style={{ fontSize: 12 }}> {this.state.dataSource[0].Address + '\n' +
-            this.state.dataSource[0].City + ' ' + this.state.dataSource[0].Zip}</Text>
-          <Text style={{ fontSize: 12 }}> {'Inspection Date: ' + getParsedDate_yyyy_mm_dd(this.state.dataSource[0].Date)}</Text>
+          <Text style={{ fontSize: 12, paddingLeft: 7 }}> {this.state.dataSource[0].Address}</Text>
+          <Text style={{ fontSize: 12, paddingLeft: 7 }}> {this.state.dataSource[0].City + ' ' + this.state.dataSource[0].Zip}</Text>
+         
+          <Text style={{ fontSize: 12, fontWeight: 'bold' }}> {'Inspection Date: ' + getParsedDate_yyyy_mm_dd(this.state.dataSource[0].Date)}</Text>
+          <Text style={{ fontSize: 12, fontWeight: 'bold' }}> {'Action Taken: ' + this.state.dataSource[0].Violation}</Text>
           <Text></Text>
-
           <Text style={{ fontSize: 12, alignSelf: 'flex-start', fontWeight: 'bold', backgroundColor: this.state.dataSource[0].NumTotalViolations == '0' ? '#008000' : '#e5e5e5' }}> {'Total Violations: ' + this.state.dataSource[0].NumTotalViolations}</Text>
           <Text style={{ fontSize: 12, alignSelf: 'flex-start', paddingLeft: 10, backgroundColor: this.state.dataSource[0].NumHighViolations != '0' ? '#f44336' : '#e5e5e5' }}> {'High Risk Violations: ' + this.state.dataSource[0].NumHighViolations}</Text>
           <Text style={{ fontSize: 12, alignSelf: 'flex-start', paddingLeft: 10, backgroundColor: this.state.dataSource[0].NumIntermediateViolations != '0' ? '#fad201' : '#e5e5e5' }}> {'Intermediate Violations: ' + this.state.dataSource[0].NumIntermediateViolations}</Text>
           <Text style={{ fontSize: 12, alignSelf: 'flex-start', paddingLeft: 10, backgroundColor: this.state.dataSource[0].NumBasicViolations != '0' ? '#fad201' : '#e5e5e5' }}> {'Basic Violations: ' + this.state.dataSource[0].NumBasicViolations}</Text>
-
           <Text></Text>
-  
+
           <Text style={{ fontSize: 12, fontWeight: 'bold' }}> {this.state.dataSource[0].NumTotalViolations != '0' ? 'Violation Details' : ''} </Text>
           <View style={{ borderBottomColor: 'black', borderBottomWidth: this.state.dataSource[0].NumTotalViolations != '0' ? 1 : 0, }} />
 

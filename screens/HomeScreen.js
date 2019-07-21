@@ -83,7 +83,7 @@ export default class HomeScreen extends React.Component {
             <MapView.Callout tooltip style={styles.customView}>
                 <View style={styles.calloutText}>
                   {/* <Text>{e.Name}{"\n"}{e.Violation}{"\n"}{getParsedDate(e.Date)}</Text> */}
-                  <Text>{e.Name}{"\n"}{e.Violation}{"\n"}{getParsedDate_yyyy_mm_dd(e.Date)}</Text>
+                  <Text>{e.Name}{"\n"}{"Inspected: " + getParsedDate_yyyy_mm_dd(e.Date)}{"\n"}{"Violations: " + e.NumTotalViolations}</Text>
                   {/* <Text>{e.Name}</Text> */}
 
                   <Text style={styles.fakeLinkText}>{"Click for more details..."}</Text>

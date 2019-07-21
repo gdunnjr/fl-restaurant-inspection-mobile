@@ -18,11 +18,10 @@ export default class SettingsScreen extends React.Component {
       <Text>{"\n"}Version 1.0 - 4/28/2019</Text>
       <Text>
         {"\n"}
-        Use the Home screen to show all first inspection failures in the last 30 days. 
-        Use the Search screen to find establishments that failed first inspection in the last 30 days. 
-        Clicking the restuarant name will open the tcplam inspection page for the restuarant where you can get all the details.
+        Use the Home screen to show all first inspections in the last 30 days. 
+        Use the Search screen to find establishments having first inspections in the last 30 days. 
         {"\n"}{"\n"}
-        Data is updated daily and is obtained from TC Palm Restaurant Inspections:
+        Data is obtained from State of Florida 
         {"\n"}
       </Text>
       <TouchableOpacity onPress={() => Linking.openURL('https://data.tcpalm.com/restaurant-inspections')}>
