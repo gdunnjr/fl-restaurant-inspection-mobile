@@ -7,7 +7,6 @@ import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import InfoScreen from '../screens/InfoScreen';
 import DetailsScreen from '../screens/DetailsScreen';
-import TestScreen from '../screens/TestScreen';
 
 const HomeStack = createStackNavigator({
   Home: { screen: HomeScreen},
@@ -31,23 +30,6 @@ const LinksStack = createStackNavigator({
 
 LinksStack.navigationOptions = {
   tabBarLabel: 'Search',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        'md-search'
-        //Platform.OS === 'ios' ? 'ios-link' : 'md-link'
-      }
-    />
-  ),
-};
-
-const TestStack = createStackNavigator({
-  Test: TestScreen,
-});
-
-TestStack.navigationOptions = {
-  tabBarLabel: 'Test',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -83,6 +65,5 @@ const AppNavigator = createStackNavigator({
 export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
-  SettingsStack,
-  TestStack,
+  SettingsStack
 });
