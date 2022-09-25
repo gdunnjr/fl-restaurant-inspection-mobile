@@ -3,8 +3,5 @@
   "lanType": "ip",
   "dev": true,
   "minify": false,
-  "urlRandomness": "eu-zdh",
-  "https": false,
-  "scheme": null,
-  "devClient": false
+  "urlRandomness": "eu-zdh"
 }
