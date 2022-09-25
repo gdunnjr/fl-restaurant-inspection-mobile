@@ -1,9 +1,10 @@
 {
-  "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://eu-zdh.gdunnjrexpo.fl-restaurant-inspection-mobile.exp.direct",
-  "packagerNgrokUrl": "https://packager.eu-zdh.gdunnjrexpo.fl-restaurant-inspection-mobile.exp.direct",
-  "ngrokPid": 2076,
+  "expoServerPort": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "devToolsPort": 19002,
-  "packagerPort": 19001,
-  "packagerPid": 19380
+  "packagerPort": 19000,
+  "packagerPid": null,
+  "webpackServerPort": null
 }
