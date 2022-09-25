@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, View, Linking } from 'react-native';
+import { ActivityIndicator, Button, StyleSheet, Text, View, Linking, TouchableOpacity } from 'react-native';
 import { MapView, Location, Permissions } from 'expo';
 import { getParsedDate_yyyy_mm_dd, fetch_with_timeout } from '../utils/Helpers.js'
 import { URL_GET_ALL_FAILED_INSPECTIONS, URL_GET_ALL_FAILED_INSPECTIONS_TEST, URL_GET_ALL_INSPECTIONS,
@@ -15,7 +15,15 @@ export default class HomeScreen extends React.Component {
     this.state = { isLoading: true, search: '',errorOccurred: false };
   }
 
+  reload() {
+    this.state = { isLoading: true, search: '',errorOccurred: false };
+    console.log('In reload');
+    this.state = { isLoading: true, search: '',errorOccurred: false };
+    this.getData();
+  }
+
   getData() {
+    console.log('In GetData');
     fetch_with_timeout(URL_GET_ALL_INSPECTIONS,20000)  
      .then((response) => response.json())
      .then((responseJson) => {
@@ -37,10 +45,12 @@ export default class HomeScreen extends React.Component {
  }
 
   componentDidMount() {
-    this.getData();
+    //this.subs = this.props.navigation.addListener("didFocus", () => this.getData());
+    this.getData()
   }
 
   render() {
+    console.log('In render');
     if (this.state.errorOccurred) {
       return (
         <View style={{ flex: 1, padding: 20 }}>
@@ -50,6 +60,7 @@ export default class HomeScreen extends React.Component {
     }
 
     if (this.state.isLoading) {
+      console.log('In is loading');
       return (
         <View style={{ flex: 1, padding: 20 }}>
           <ActivityIndicator />
@@ -59,8 +70,12 @@ export default class HomeScreen extends React.Component {
     }
 
     return this.state.inspectionsDataSource instanceof Object ? (
-      
+  
       <View style={styles.container}>
+
+
+
+
         <MapView style={styles.map}
           // Center in mid FL and zoom out so whole state is visible
           region={{ latitude: 28.549445, longitude: -81.772854, latitudeDelta: 6.222, longitudeDelta: 1.911 }}>
@@ -92,6 +107,19 @@ export default class HomeScreen extends React.Component {
             </MapView.Marker>
           )}
         </MapView>
+        <View>
+                <Button style={{position: "absolute", bottom: 50, color:'black'}}
+          title="Refresh Map"
+          onPress={() => this.reload()}
+        />
+         <TouchableOpacity
+         style={{position: "absolute", bottom: 80, color:'black'}}
+         onPress={this.reload()}
+       >
+         <Text> Touch Here </Text>
+ </TouchableOpacity>
+    </View>
+
       </View>
     ) : <View style={{ flex: 1, padding: 20 }}><ActivityIndicator /><Text>{INFO_MSG_LOADING_DATA}</Text></View>;
   }
